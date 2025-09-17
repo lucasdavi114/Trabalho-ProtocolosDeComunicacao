@@ -26,5 +26,5 @@ if __name__ == "__main__":
     
     user_data = input("Entrada de Dados: ")
 
-    print(f"Entradas: {user_data}")
+    print(f"Entrada: {user_data}")
 
