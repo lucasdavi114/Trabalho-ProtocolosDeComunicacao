@@ -12,7 +12,7 @@ class Cabecalho_Bit_Oriented:
     indices_flags = []
     
     # Construtor da classe inicia a entrada do usuário
-    def __init__(self, user_data):
+    def __init__(self, user_data = []):
         self.user_data = user_data
 
     # Adiciona se necessário um bit flag 0 ao final de uma sequência de 5 1s, retorna um vetor com o bitStuffing realizado se for necessário
@@ -20,7 +20,7 @@ class Cabecalho_Bit_Oriented:
         cont = 0
         bits = []
         tamanho = len(self.user_data)
-        if tamanho < 5:
+        if tamanho <= 5:
             return self.user_data
         for i in range(tamanho):
             bits.append(self.user_data[i])
@@ -36,12 +36,22 @@ class Cabecalho_Bit_Oriented:
     
     # Monta o cabecalho com bitStuffing e as flags no inicio e final
     def monta_cabecalho(self):
-        self.transmissao.extend(self.FRAMING_FLAG)
-        self.transmissao.append(self.SPACE)
-        self.user_data = self.bit_stuffing()
-        self.transmissao.extend(self.user_data)
-        self.transmissao.append(self.SPACE)
-        self.transmissao.extend(self.FRAMING_FLAG)
+        if not self.transmissao:
+            self.transmissao.extend(self.FRAMING_FLAG)
+            self.transmissao.append(self.SPACE)
+            self.user_data = self.bit_stuffing()
+            self.transmissao.extend(self.user_data)
+            self.transmissao.append(self.SPACE)
+            self.transmissao.extend(self.FRAMING_FLAG)
+        else:
+            self.transmissao.clear()
+            self.transmissao.extend(self.FRAMING_FLAG)
+            self.transmissao.append(self.SPACE)
+            self.user_data = self.bit_stuffing()
+            self.transmissao.extend(self.user_data)
+            self.transmissao.append(self.SPACE)
+            self.transmissao.extend(self.FRAMING_FLAG)
+        return self.converte_lista_em_string(self.transmissao)
     
     # Remove os bit_flags e o bitStuffing da mensagem do usuário
     def desmonta_cabecalho(self):
@@ -57,6 +67,7 @@ class Cabecalho_Bit_Oriented:
                 num_removidos += 1
         self.transmissao.extend(self.user_data)
         self.indices_flags.clear()
+        return self.converte_lista_em_string(self.transmissao)
 
     # Uma saída padrão no terminal mostrando todos os atributos da classe Cabecalho_Bit_Oriented
     def to_string(self):
